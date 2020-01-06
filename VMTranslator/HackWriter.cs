@@ -35,12 +35,39 @@ namespace VMTranslator
 
         private bool ArithmeticOperation(ref List<Token> Tokens, ref string Hack)
         {
-            throw new Exception("Writing arithmetic ops not handled.");
+            StringBuilder sb = new StringBuilder();
+            //throw new Exception("Writing arithmetic ops not handled.");
             switch (Tokens[0].Value)
             {
                 case "add":
+                    sb.Clear();
+                    sb.AppendLine(WriteComment(ref Tokens));
+                    sb.AppendLine("@SP");
+                    sb.AppendLine("M=M-1");
+                    sb.AppendLine("A=M");
+                    sb.AppendLine("D=M");
+                    sb.AppendLine("@SP");
+                    sb.AppendLine("M=M-1");
+                    sb.AppendLine("A=M");
+                    sb.AppendLine("M=M+D");
+                    sb.AppendLine("@SP");
+                    sb.AppendLine("M=M+1");
+                    Hack = sb.ToString();
                     break;
                 case "sub":
+                    sb.Clear();
+                    sb.AppendLine(WriteComment(ref Tokens));
+                    sb.AppendLine("@SP");
+                    sb.AppendLine("M=M-1");
+                    sb.AppendLine("A=M");
+                    sb.AppendLine("D=M");
+                    sb.AppendLine("@SP");
+                    sb.AppendLine("M=M-1");
+                    sb.AppendLine("A=M");
+                    sb.AppendLine("M=M-D");
+                    sb.AppendLine("@SP");
+                    sb.AppendLine("M=M+1");
+                    Hack = sb.ToString();
                     break;
                 case "neg":
                     break;
@@ -92,7 +119,8 @@ namespace VMTranslator
                         sb.AppendLine("@SP");
                         sb.AppendLine("A=M");
                         sb.AppendLine("M=D");
-                        sb.AppendLine("A=A+1");
+                        sb.AppendLine("@SP");
+                        sb.AppendLine("M=M+1");
                         Hack = sb.ToString();
                         return true;
                     }
@@ -106,7 +134,8 @@ namespace VMTranslator
                         sb.AppendLine("@SP");
                         sb.AppendLine("A=M");
                         sb.AppendLine("M=D");
-                        sb.AppendLine("A=A+1");
+                        sb.AppendLine("@SP");
+                        sb.AppendLine("M=M+1");
                         Hack = sb.ToString();
                         return true;
                     }
@@ -138,21 +167,25 @@ namespace VMTranslator
                     { 
                         case "local":
                             sb.AppendLine("@LCL");
+                            sb.AppendLine("A=M");
                             break;
                         case "temp":
                             sb.AppendLine("@5");
                             break;
                         case "argument":
                             sb.AppendLine("@ARG");
+                            sb.AppendLine("A=M");
                             break;
                         case "this":
                             sb.AppendLine("@THIS");
+                            sb.AppendLine("A=M");
                             break;
                         case "that":
                             sb.AppendLine("@THAT");
+                            sb.AppendLine("A=M");
                             break;
                     }
-                    sb.AppendLine("A=M");
+                    
                     for (int i = 0; i < offset; i++)
                     {
                         sb.AppendLine("A=A+1");
@@ -179,7 +212,8 @@ namespace VMTranslator
                     sb.AppendLine("@SP");
                     sb.AppendLine("A=M");
                     sb.AppendLine("M=D");
-                    sb.AppendLine("A=A-1");
+                    sb.AppendLine("@SP");
+                    sb.AppendLine("M=M+1");
                     Hack = sb.ToString();
                 }
 
@@ -191,6 +225,10 @@ namespace VMTranslator
                 {
                     sb.Clear();
                     sb.AppendLine(WriteComment(ref Tokens));
+                    sb.AppendLine("@SP");
+                    sb.AppendLine("M=M-1");
+                    sb.AppendLine("A=M");
+                    sb.AppendLine("D=M");
                     sb.AppendLine("@" + "Foo." + Tokens[2].Value);
                     sb.AppendLine("M=D");
                     Hack = sb.ToString();
